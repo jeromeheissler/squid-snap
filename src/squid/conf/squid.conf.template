@@ -1,0 +1,34 @@
+http_port 3128
+
+http_port 8080 intercept
+
+cache_mem 256 MB
+
+maximum_object_size 512 MB 
+
+minimum_object_size 0 KB
+
+maximum_object_size_in_memory 16 MB
+
+cache_dir ufs ${SNAP_DATA}/var/spool/squid 2000 64 512
+
+access_log ${SNAP_DATA}/var/log/squid/access.log combined
+
+cache_log ${SNAP_DATA}/var/log/squid/cache.log
+
+logfile_rotate 60
+
+cache_swap_high 95
+
+cache_swap_low 90
+
+acl localnet src 192.168.1.0/24
+
+http_access allow localnet
+
+http_access deny all
+
+visible_hostname squid.david.dev
+
+cache_mgr admin@gmail.com
+
