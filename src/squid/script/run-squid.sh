@@ -11,20 +11,40 @@ create_swap_directories() {
         squid -z -f ${SNAP_DATA}/etc/squid.conf
          #waiting for a long time to make sure the directories are created 
          #to avoid fatal error occurs when squid startup.
-        sleep 10
+        sleep 8
     fi
 }
 
-launch_in_debug_mode() {
-    squid -NCd1 -f ${SNAP_DATA}/etc/squid.conf
+launch() {
+    squid -f ${SNAP_DATA}/etc/squid.conf
 }
 
-launch_in_release_mode() {
-    squid -N -f ${SNAP_DATA}/etc/squid.conf
+shutdown() {
+    squid -k shutdown -f ${SNAP_DATA}/etc/squid.conf
+}
+
+restart() {
+    squid -k restart -f ${SNAP_DATA}/etc/squid.conf
 }
 
 create_swap_directories
 
-echo "launch squid."
-launch_in_debug_mode
+case "$1" in
+  start)
+    echo "launch squid."
+    launch
+    ;;
+  stop)
+    echo "shutdown squid."
+    shutdown
+    ;;
+  restart)
+    echo "restart squid."
+    restart
+    ;;
+   *)  
+    echo "Usage: squid.{start|stop|restart}"
+    exit 1
+    ;;
+esac
 

@@ -6,15 +6,27 @@ description: |
   and reusing frequently-requested web pages. 
   Squid has extensive access controls and makes a great server accelerator.
 
-grade: devel # must be 'stable' to release into candidate/stable channels
-confinement: devmode # use 'strict' once you have the right plugs and slots
+grade: stable
+confinement: devmode
 
 apps:
   squid:
-    command: run-squid.sh
-    daemon: simple
-    restart-condition: always    
-    plugs: [ network, network-bind, network-control, firewall-control, process-control ]
+    command: run-squid.sh start
+    stop-command: run-squid.sh stop
+    daemon: forking
+    plugs: [ home, network, network-bind, network-control, firewall-control, process-control ]
+
+  start:
+    command: run-squid.sh start
+    plugs: [ home, network, network-bind, network-control, firewall-control, process-control ]
+
+  stop:
+    command: run-squid.sh stop
+    plugs: [ home, network, network-bind, network-control, firewall-control, process-control ]
+
+  restart:
+    command: run-squid.sh restart
+    plugs: [ home, network, network-bind, network-control, firewall-control, process-control ]
 
 parts:
   squid:
