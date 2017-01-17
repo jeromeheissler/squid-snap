@@ -14,7 +14,7 @@ $ sudo snap connect squid:process-control :process-control
 $ sudo snap enable squid
 ```
 
-Or simple run 
+Or simply run
 ```
 $ sudo snap-connect.sh
 ```

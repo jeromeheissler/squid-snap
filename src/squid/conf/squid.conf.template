@@ -1,34 +1,117 @@
+# listen port
 http_port 3128
 
+#Support IPv6 for intercept mode.
 http_port 8080 intercept
 
+# The extra memory that to be provided for squid to use.
 cache_mem 256 MB
 
-maximum_object_size 512 MB 
+# The default value for max-size on any cache_dir.
+maximum_object_size 512 MB
 
+# All responses can be stored.
 minimum_object_size 0 KB
 
+# Objects greater than 16MB will not be attempted to kept in the memory cache.
 maximum_object_size_in_memory 16 MB
 
-cache_dir ufs ${SNAP_DATA}/var/spool/squid 2000 64 512
+# cache path, cache dir space(4G), number of 1L/2L cache(16MB/256MB).
+cache_dir ufs ${SNAP_DATA}/var/spool/squid 4096 15 256
 
+# access_log dir path
 access_log ${SNAP_DATA}/var/log/squid/access.log combined
 
+# cache_log dir path
 cache_log ${SNAP_DATA}/var/log/squid/cache.log
 
+# logfile rotation days
 logfile_rotate 60
 
+# start to clean old cache if cache is in the percentage(95%)
 cache_swap_high 95
 
+# stop to clean old cache when cache is in the percentage(90%)
 cache_swap_low 90
 
-acl localnet src 192.168.1.0/24
+# RFC1918 possible internal network
+acl localnet src 10.0.0.0/8
+# RFC1918 possible internal network
+acl localnet src 172.16.0.0/12
+# RFC1918 possible internal network
+acl localnet src 192.168.0.0/16
+# RFC 4193 local private network range
+acl localnet src fc00::/7
+# RFC 4291 link-local (directly plugged) machines
+acl localnet src fe80::/10
 
+# Example rule allowing access from your local networks.
+# Adapt to list your (internal) IP networks from where browsing
+# should be allowed
+acl localnet src 10.0.0.0/8 # RFC1918 possible internal network
+acl localnet src 172.16.0.0/12  # RFC1918 possible internal network
+acl localnet src 192.168.0.0/16 # RFC1918 possible internal network
+acl localnet src fc00::/7       # RFC 4193 local private network range
+acl localnet src fe80::/10      # RFC 4291 link-local (directly plugged) machines
+
+acl SSL_ports port 443
+acl Safe_ports port 80      # http
+acl Safe_ports port 21      # ftp
+acl Safe_ports port 443     # https
+acl Safe_ports port 70      # gopher
+acl Safe_ports port 210     # wais
+acl Safe_ports port 1025-65535  # unregistered ports
+acl Safe_ports port 280     # http-mgmt
+acl Safe_ports port 488     # gss-http
+acl Safe_ports port 591     # filemaker
+acl Safe_ports port 777     # multiling http
+acl CONNECT method CONNECT
+
+#
+# Recommended minimum Access Permission configuration:
+#
+# Deny requests to certain unsafe ports
+http_access deny !Safe_ports
+
+# Deny CONNECT to other than secure SSL ports
+http_access deny CONNECT !SSL_ports
+
+# Only allow cachemgr access from localhost
+http_access allow localhost manager
+http_access deny manager
+
+# allow the access from local network segment
 http_access allow localnet
 
+# allow the access from localhost
+http_access allow localhost
+
+# deny all access from others
 http_access deny all
 
-visible_hostname squid.david.dev
 
+# based on http://code.google.com/p/ghebhes/downloads/detail?name=tunning.conf&can=2&q=
+#All File
+refresh_pattern -i \.(3gp|7z|ace|asx|avi|bin|cab|dat|deb|rpm|divx|dvr-ms)      129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+refresh_pattern -i \.(rar|jar|gz|tgz|tar|bz2|iso|m1v|m2(v|p)|mo(d|v)|(x-|)flv) 129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+refresh_pattern -i \.(jp(e?g|e|2)|gif|pn[pg]|bm?|tiff?|ico|swf|css|js)         129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+refresh_pattern -i \.(mp(e?g|a|e|1|2|3|4)|mk(a|v)|ms(i|u|p))                   129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+refresh_pattern -i \.(og(x|v|a|g)|rar|rm|r(a|p)m|snd|vob|wav)                  129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+refresh_pattern -i \.(pp(s|t)|wax|wm(a|v)|wmx|wpl|zip|cb(r|z|t))               129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
+# for snap package, it fetches the latest one from server if new one is found on server, cache it and give it back to client.
+refresh_pattern -i \.snap$                                                     129600 100% 129600 reload-into-ims ignore-no-cache
+
+refresh_pattern ^gopher:  1440  0%  1440
+refresh_pattern ^ftp:    10080 95% 43200 override-lastmod reload-into-ims
+
+refresh_pattern -i \.(doc|pdf)$           100080 90% 43200 override-expire ignore-no-cache ignore-no-store ignore-private reload-into-ims
+refresh_pattern -i \.(html|htm)$          1440   40% 40320 ignore-no-cache ignore-no-store ignore-private override-expire reload-into-ims
+refresh_pattern (Release|Packages(.gz)*)$    0   20%  2880
+refresh_pattern .                          180   95% 43200 override-lastmod reload-into-ims
+
+# hostname
+visible_hostname store.etag.proxy
+
+# admin email address
 cache_mgr admin@gmail.com
 
