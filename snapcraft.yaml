@@ -1,4 +1,4 @@
-name: squid
+name: squid-gary
 version: '0.1' 
 summary: Squid is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more.
 description: |
