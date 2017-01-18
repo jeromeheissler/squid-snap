@@ -1,0 +1,34 @@
+#!/bin/bash
+
+source $SNAP_DATA/custom_config
+
+squid_conf="${SNAP_DATA}/etc/squid.conf"
+
+params=("http_port" "cache_mem" "maximum_object_size" "maximum_object_size_in_memory" "cache_dir_space" "visible_hostname" "cache_mgr")
+line_number=(2 8 11 17 20 112 115)
+length=${#params[@]}
+
+for ((i = 0; i < $length; i++))
+do
+  if [ ! -z "${!params[i]}" ]; then
+      echo "customized config: ${params[i]}=${!params[i]}"
+      sed -i.bak "${line_number[i]}d" $squid_conf
+      unit=""
+      if [ ${params[i]} == "cache_mem" ] || [ ${params[i]} == "maximum_object_size" ] ||
+         [ ${params[i]} == "maximum_object_size_in_memory" ]; then
+          unit="MB" 
+      fi
+
+      if [ ${params[i]} == "cache_dir_space" ]; then
+          sed -i.bak "${line_number[i]}icache_dir ufs ${SNAP_DATA}/var/spool/squid ${!params[i]} 15 256" $squid_conf
+      else
+          #space sensitive
+          if [ -z $unit ]; then
+              sed -i.bak "${line_number[i]}i${params[i]} ${!params[i]}" $squid_conf
+          else
+              sed -i.bak "${line_number[i]}i${params[i]} ${!params[i]} ${unit}" $squid_conf
+          fi
+      fi
+  fi
+done
+

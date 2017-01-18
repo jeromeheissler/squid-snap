@@ -1,0 +1,49 @@
+#!/bin/sh
+
+CUS_CONF="${SNAP_DATA}/custom_config"
+
+test -f $CUS_CONF && rm $CUS_CONF
+
+if ! http_port=$(snapctl get http-port); then
+    echo "http_port is: $http_port "
+    exit 1
+fi
+
+if ! cache_mem=$(snapctl get cache-mem); then
+    echo "cache_mem is: $cache_mem MB"
+    exit 1
+fi
+
+if ! maximum_object_size=$(snapctl get maximum-object-size); then
+    echo "maximum_object_size is: $maximum_object_size MB"
+    exit 1
+fi
+
+if ! maximum_object_size_in_memory=$(snapctl get maximum-object-size-in-memory); then
+    echo "maximum_object_size_in_memory is: $maximum_object_size_in_memory MB"
+    exit 1
+fi
+
+if ! visible_hostname=$(snapctl get visible-hostname); then
+    echo "visible_hostname is: $visible_hostname"
+    exit 1
+fi
+
+if ! cache_dir_space=$(snapctl get cache-dir-space); then
+    echo "cache_dir_space is: $cache_dir_space MB"
+    exit 1
+fi
+
+if ! cache_mgr=$(snapctl get cache-mgr); then
+    echo "cache_mgr is: $cache_mgr"
+    exit 1
+fi
+
+echo "http_port=$http_port" > $CUS_CONF
+echo "cache_mem=$cache_mem" >> $CUS_CONF
+echo "maximum_object_size=$maximum_object_size" >> $CUS_CONF
+echo "maximum_object_size_in_memory=$maximum_object_size_in_memory" >> $CUS_CONF
+echo "cache_dir_space=$cache_dir_space" >> $CUS_CONF
+echo "visible_hostname=$visible_hostname" >> $CUS_CONF
+echo "cache_mgr=$cache_mgr" >> $CUS_CONF
+chmod 600 $CUS_CONF

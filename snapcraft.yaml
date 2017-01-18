@@ -6,26 +6,37 @@ description: |
   and reusing frequently-requested web pages. 
   Squid has extensive access controls and makes a great server accelerator.
 
+  usage: $ sudo snap set squid http-port=9876
+  supported parameters:
+    - http-port: The socket addresses where Squid will listen for HTTP client requests. The default is '3128'
+    - cache-mem: The ideal amount of memory (MB) to be used for in-transit/Hot/negative-Cached objects. The default is '256'
+    - maximum-object-size: The max-size parameter on any cache_dir (MB). The default is '512'.
+    - maximum-object-size-in-memory: Objects greater than this size (MB)will not be attempted to kept in the memory cache. The default is '16'.
+    - cache_dir_space: The amount of disk space (MB) to use under cache directory. The default value is '4096'.
+    - visible-hostname: If you want to present a special hostname in error messages, etc, define this. The default value is 'store.etag.proxy'.
+    - cache_mgr: Email-address of local cache manager who will receive mail if the cache dies. The default value is 'webmaster@mail.com'.
+
+
 grade: stable
-confinement: devmode
+confinement: strict
 
 apps:
   squid:
-    command: run-squid.sh start
-    stop-command: run-squid.sh stop
+    command: run-squid start
+    stop-command: run-squid stop
     daemon: forking
     plugs: [ home, network, network-bind, network-control, firewall-control, process-control ]
 
   start:
-    command: run-squid.sh start
+    command: run-squid start
     plugs: [ home, network, network-bind, network-control, firewall-control, process-control ]
 
   stop:
-    command: run-squid.sh stop
+    command: run-squid stop
     plugs: [ home, network, network-bind, network-control, firewall-control, process-control ]
 
   restart:
-    command: run-squid.sh restart
+    command: run-squid restart
     plugs: [ home, network, network-bind, network-control, firewall-control, process-control ]
 
 parts:
@@ -64,7 +75,8 @@ parts:
     snap:
       - -etc/squid.conf
   squid-customized:
-    plugin: copy
-    files:
-     src/squid/script/*: bin/
-     src/squid/conf/*: etc/
+    plugin: dump
+    organize:
+      src/squid/script/*: bin/
+      src/squid/conf/squid.conf.template: etc/
+      src/squid/conf/configure: meta/hooks/configure

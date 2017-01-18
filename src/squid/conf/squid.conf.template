@@ -89,7 +89,6 @@ http_access allow localhost
 # deny all access from others
 http_access deny all
 
-
 # based on http://code.google.com/p/ghebhes/downloads/detail?name=tunning.conf&can=2&q=
 #All File
 refresh_pattern -i \.(3gp|7z|ace|asx|avi|bin|cab|dat|deb|rpm|divx|dvr-ms)      129600 100% 129600 ignore-no-cache ignore-no-store ignore-private override-expire override-lastmod reload-into-ims ignore-reload
@@ -113,5 +112,5 @@ refresh_pattern .                          180   95% 43200 override-lastmod relo
 visible_hostname store.etag.proxy
 
 # admin email address
-cache_mgr admin@gmail.com
+cache_mgr webmaster@mail.com
 
