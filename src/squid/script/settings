@@ -8,11 +8,16 @@ params=("http_port" "cache_mem" "maximum_object_size" "maximum_object_size_in_me
 line_number=(2 8 11 17 20 112 115)
 length=${#params[@]}
 
+#sed -i in-place option is not available by default on some other distro.
+modify() {
+    sed -u "$1" ${squid_conf} > ${squid_conf}.bak && mv ${squid_conf}.bak ${squid_conf}
+}
+
 for ((i = 0; i < $length; i++))
 do
   if [ ! -z "${!params[i]}" ]; then
       echo "customized config: ${params[i]}=${!params[i]}"
-      sed -i.bak "${line_number[i]}d" $squid_conf
+      modify "${line_number[i]}d"
       unit=""
       if [ ${params[i]} == "cache_mem" ] || [ ${params[i]} == "maximum_object_size" ] ||
          [ ${params[i]} == "maximum_object_size_in_memory" ]; then
@@ -20,13 +25,13 @@ do
       fi
 
       if [ ${params[i]} == "cache_dir_space" ]; then
-          sed -i.bak "${line_number[i]}icache_dir ufs ${SNAP_DATA}/var/spool/squid ${!params[i]} 15 256" $squid_conf
+          modify "${line_number[i]}icache_dir ufs ${SNAP_DATA}/var/spool/squid ${!params[i]} 15 256"
       else
           #space sensitive
           if [ -z $unit ]; then
-              sed -i.bak "${line_number[i]}i${params[i]} ${!params[i]}" $squid_conf
+              modify "${line_number[i]}i${params[i]} ${!params[i]}"
           else
-              sed -i.bak "${line_number[i]}i${params[i]} ${!params[i]} ${unit}" $squid_conf
+              modify "${line_number[i]}i${params[i]} ${!params[i]} ${unit}"
           fi
       fi
   fi
