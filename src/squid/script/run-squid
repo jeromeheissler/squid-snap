@@ -4,7 +4,7 @@ test -d ${SNAP_DATA}/etc || mkdir -p ${SNAP_DATA}/etc
 test -d ${SNAP_DATA}/var/run || mkdir -p ${SNAP_DATA}/var/run
 test -d ${SNAP_DATA}/var/log/squid || mkdir -p ${SNAP_DATA}/var/log/squid
 test -d ${SNAP_DATA}/var/spool/squid || mkdir -p ${SNAP_DATA}/var/spool/squid
-test -f ${SNAP}/etc/squid.conf || sed -e "s|\${SNAP_DATA}|$SNAP_DATA|" ${SNAP}/etc/squid.conf.template > ${SNAP_DATA}/etc/squid.conf
+test -f ${SNAP_DATA}/etc/squid.conf || sed -e "s|\${SNAP_DATA}|$SNAP_DATA|" ${SNAP}/etc/squid.conf.template > ${SNAP_DATA}/etc/squid.conf
 
 source ${SNAP}/bin/settings
 
