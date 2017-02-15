@@ -67,6 +67,7 @@ parts:
       - --disable-carp
       - --disable-internal-dns 
       - --disable-ident-lookups 
+      - --disable-arch-native
     build-packages:
       - libssl-dev
       - libxml2-dev
