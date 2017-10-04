@@ -2,8 +2,8 @@ name: squid-gary
 version: '0.2'
 summary: Squid is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more.
 description: |
-  It reduces bandwidth and improves response times by caching 
-  and reusing frequently-requested web pages. 
+  It reduces bandwidth and improves response times by caching
+  and reusing frequently-requested web pages.
   Squid has extensive access controls and makes a great server accelerator.
 
   usage: $ sudo snap set squid http-port=9876
@@ -46,18 +46,18 @@ parts:
     source-type: git
     configflags:
       - --enable-gnuregex
-      - --enable-async-io=240 
+      - --enable-async-io=240
       - --enable-storeio=ufs,aufs,diskd
-      - --enable-poll 
+      - --enable-poll
       - --enable-ssl
       - --enable-icmp
       - --enable-kill-parent-hack
-      - --enable-cachemgr-hostname=localhost  
-      - --enable-linux-netfilter  
+      - --enable-cachemgr-hostname=localhost
+      - --enable-linux-netfilter
       - --enable-large-cache-files
       - --enable-default-hostsfile=/etc/hosts
-      - --enable-snmp 
-      - --enable-underscore  
+      - --enable-snmp
+      - --enable-underscore
       - --enable-arp-acl
       - --enable-snap
       - --with-maxfd=65535
@@ -65,15 +65,15 @@ parts:
       - --with-dl
       - --with-pthreads
       - --disable-carp
-      - --disable-internal-dns 
-      - --disable-ident-lookups 
+      - --disable-internal-dns
+      - --disable-ident-lookups
       - --disable-arch-native
     build-packages:
       - libssl-dev
       - libxml2-dev
     stage:
       - -etc/squid.conf
-    snap:
+    prime:
       - -etc/squid.conf
   squid-customized:
     plugin: dump
