@@ -34,6 +34,11 @@ cache_swap_high 95
 # stop to clean old cache when cache is in the percentage(90%)
 cache_swap_low 90
 
+acl all src 0.0.0.0/0.0.0.0
+acl manager proto cache_object
+acl localhost src 127.0.0.1/32
+acl to_localhost dst 127.0.0.1/8
+
 # RFC1918 possible internal network
 acl localnet src 10.0.0.0/8
 # RFC1918 possible internal network
@@ -113,4 +118,3 @@ visible_hostname store.etag.proxy
 
 # admin email address
 cache_mgr webmaster@mail.com
-
